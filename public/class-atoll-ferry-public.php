@@ -65,8 +65,8 @@ class Atoll_Ferry_Public {
 ob_start();
 ?>
     <div id="speedboat-search">
-        <label for="departure-island">Departure Island:</label>
-        <select id="departure-island">
+        <label for="island-select">Departure Island:</label>
+        <select id="island-select">
             <!-- Add departure islands dynamically if needed -->
             <?php
 			echo self::create_select_list( $ferry_schedules );
@@ -75,7 +75,7 @@ ob_start();
 
         <button id="search-btn">Search</button>
 
-        <div id="results"></div>
+        <div id="schedule-output"></div>
     </div>
 <?php
 return ob_get_clean();
@@ -108,14 +108,40 @@ return ob_get_clean();
 
 	public function get_schedule_for_departure_island_callback() {
 		$selectedIsland = $_POST['selectedIsland'];
-		global $data; // Assuming $data is a global variable containing your schedule data
+		$ferry_schedule_data = self::get_ferry_schedule();
 	
 		// Call the existing PHP function to get the schedule
-		$scheduleOutput = self::get_schedule_for_departure_island($selectedIsland, $data);
+		$scheduleOutput = self::get_schedule_for_departure_island($selectedIsland, $ferry_schedule_data);
+		$scheduleOutput .= '<hr/>';
+		$scheduleOutput .= self::get_schedule_for_destination_island($selectedIsland, $ferry_schedule_data);
 	
 		echo $scheduleOutput;
 	
 		wp_die(); // Always include this line to terminate the script
+	}
+
+	public function get_schedule_for_destination_island($selectedIsland, $data) {
+		$scheduleOutput = '';
+	
+		// Loop through the $data array to find schedules where the selected island is the destination
+		foreach ($data as $departureIsland => $destinations) {
+			foreach ($destinations as $destinationIsland => $schedule) {
+				if ($destinationIsland === $selectedIsland) {
+					$daysOfWeek = key($schedule);
+					$time = current($schedule);
+	
+					// Build the output string
+					$scheduleOutput .= "Departure Island: $departureIsland, Destination Island: $destinationIsland, Days: $daysOfWeek, Time: $time<br>";
+				}
+			}
+		}
+	
+		// Check if any schedule was found
+		if (empty($scheduleOutput)) {
+			$scheduleOutput = "No schedule found for the selected destination island.";
+		}
+	
+		return $scheduleOutput;
 	}	
 
 	public function get_schedule_for_departure_island($selectedIsland, $data) {
@@ -124,12 +150,26 @@ return ob_get_clean();
 		// Check if the selected island exists in the $data array
 		if (array_key_exists($selectedIsland, $data)) {
 			// Loop through the $data array for the selected departure island
+
 			foreach ($data[$selectedIsland] as $destinationIsland => $schedule) {
 				$daysOfWeek = key($schedule);
-				$time = current($schedule);
-	
-				// Build the output string
-				$scheduleOutput .= "Departure Island: $selectedIsland, Destination Island: $destinationIsland, Days: $daysOfWeek, Time: $time<br>";
+				$times = explode(',', current($schedule));
+
+                // Check if both departure and arrival times are present
+                if (count($times) === 2) {
+                    $departureTime = trim($times[0]);
+                    $arrivalTime = trim($times[1]);
+
+					// Build the output string
+					$scheduleOutput .= '<h6>'.$destinationIsland . '</h6>';
+					$scheduleOutput .= '<p>'.$daysOfWeek . '</p>';
+					$scheduleOutput .= '<p>Departure from ' .$selectedIsland .' at '. $departureTime . '</p>';
+					$scheduleOutput .= '<p>Arrival to ' . $destinationIsland . ' at ' . $arrivalTime . '</p>';
+					$scheduleOutput .= '<hr/>';
+
+                } else {
+                    $scheduleOutput .= "Invalid time format for $departureIsland to $destinationIsland schedule.<br>";
+                }
 			}
 		} else {
 			$scheduleOutput = "No schedule found for the selected departure island.";
@@ -533,6 +573,8 @@ return $data;
 		 */
 
 		wp_enqueue_script( $this->atoll_ferry, plugin_dir_url( __FILE__ ) . 'js/atoll-ferry-public.js', array( 'jquery' ), $this->version, false );
+		// Pass the PHP variables to JavaScript
+		wp_localize_script($this->atoll_ferry, 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
 
 	}
 

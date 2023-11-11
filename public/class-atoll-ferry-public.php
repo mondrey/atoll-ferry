@@ -185,20 +185,13 @@ return ob_get_clean();
 
 					$prev_departureIsland = $departureIsland;
 	
-					foreach ($destinations as $destinationIsland => $schedule) {
+					foreach ($destinations as $destinationIsland => $transfer_time) {
 						// Extract days and times
 						//error_log("Current Schedule: " . print_r($schedule, true));
-						if ( is_array($schedule) ) {
-							foreach ( $schedule as $daysOfWeek => $timeOfDay ) {
-								$transfer_days = $daysOfWeek;
-								$transfer_time = $timeOfDay;
+						$times = explode(',', $transfer_time);
 
-								$times = explode(',', $transfer_time);
-
-								$time_start = trim($times[0]);
-								$time_end = trim($times[1]);
-							}
-						}
+						$time_start = trim($times[0]);
+						$time_end = trim($times[1]);
 	
 						// Output departure and destination
 						// if ( $departure == $destinationIsland ) {
@@ -440,349 +433,118 @@ return ob_get_clean();
 
 		$data = array();
 // 301
-
-$data['301'][]['Himandhoo']['Maalhos'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '6:30am,7:00am',
-];
-
-$data['301'][]['Maalhos']['Feridhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:05am,7:30am',
-];
-
-$data['301'][]['Feridhoo']['Mathiveri'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:35am,8:30am',
-];
-
-$data['301'][]['Mathiveri']['Bodufolhudhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:35am,8:55am',
-];
-
-$data['301'][]['Bodufolhudhoo']['Ukulhas'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '9:00am,9:35am',
-];
-
-$data['301'][]['Ukulhas']['Rasdhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '10:00am,10:55am',
-];
-
-$data['301'][]['Rasdhoo']['Ukulhas'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '13:00pm,13:55pm',
-];
-
-$data['301'][]['Ukulhas']['Bodufolhudhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:00pm,14:35pm',
-];
-
-$data['301'][]['Bodufolhudhoo']['Mathiveri'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:40pm,15:00pm',
-];
-
-$data['301'][]['Mathiveri']['Feridhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:05pm,16:05pm',
-];
-
-$data['301'][]['Feridhoo']['Maalhos'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:10pm,16:35pm',
-];
-
-$data['301'][]['Maalhos']['Himandhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:40pm,17:10pm',
-];
+$data['days']['301'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['301'][]['Himandhoo']['Maalhos'] = '6:30am,7:00am';
+$data['301'][]['Maalhos']['Feridhoo'] =  '7:05am,7:30am';
+$data['301'][]['Feridhoo']['Mathiveri'] = '7:35am,8:30am';
+$data['301'][]['Mathiveri']['Bodufolhudhoo'] = '8:35am,8:55am';
+$data['301'][]['Bodufolhudhoo']['Ukulhas'] = '9:00am,9:35am';
+$data['301'][]['Ukulhas']['Rasdhoo'] = '10:00am,10:55am';
+$data['301'][]['Rasdhoo']['Ukulhas'] = '13:00pm,13:55pm';
+$data['301'][]['Ukulhas']['Bodufolhudhoo'] = '14:00pm,14:35pm';
+$data['301'][]['Bodufolhudhoo']['Mathiveri'] = '14:40pm,15:00pm';
+$data['301'][]['Mathiveri']['Feridhoo'] = '15:05pm,16:05pm';
+$data['301'][]['Feridhoo']['Maalhos'] = '16:10pm,16:35pm';
+$data['301'][]['Maalhos']['Himandhoo'] = '16:40pm,17:10pm';
 
 
 // 302
 
-
-$data['302'][]['Mandhoo']['Ku’nburudhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '6:30am,8:05am',
-];
-
-$data['302'][]['Ku’nburudhoo']['Mahibadhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:10am,8:30am',
-];
-
-$data['302'][]['Mahibadhoo']['Hangnaameedhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:35am,9:15am',
-];
-
-$data['302'][]['Hangnaameedhoo']['Omadhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '9:20am,9:50am',
-];
-
-$data['302'][]['Omadhoo']['Mahibadhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '9:55am,10:10am',
-];
-
-$data['302'][]['Mahibadhoo']['Omadhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '13:30pm,13:45pm',
-];
-
-$data['302'][]['Omadhoo']['Hangnaameedhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '13:50pm,14:20pm',
-];
-
-$data['302'][]['Hangnaameedhoo']['Mahibadhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:25pm,15:05pm',
-];
-
-$data['302'][]['Mahibadhoo']['Ku’nburudhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:10pm,15:30pm',
-];
-
-$data['302'][]['Ku’nburudhoo']['Mandhoo'] = [
-	'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:35pm,17:10pm',
-];
-
+$data['days']['302'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['302'][]['Mandhoo']['Ku’nburudhoo'] = '6:30am,8:05am';
+$data['302'][]['Ku’nburudhoo']['Mahibadhoo'] = '8:10am,8:30am';
+$data['302'][]['Mahibadhoo']['Hangnaameedhoo'] = '8:35am,9:15am';
+$data['302'][]['Hangnaameedhoo']['Omadhoo'] = '9:20am,9:50am';
+$data['302'][]['Omadhoo']['Mahibadhoo'] = '9:55am,10:10am';
+$data['302'][]['Mahibadhoo']['Omadhoo'] = '13:30pm,13:45pm';
+$data['302'][]['Omadhoo']['Hangnaameedhoo'] = '13:50pm,14:20pm';
+$data['302'][]['Hangnaameedhoo']['Mahibadhoo'] = '14:25pm,15:05pm';
+$data['302'][]['Mahibadhoo']['Ku’nburudhoo'] = '15:10pm,15:30pm';
+$data['302'][]['Ku’nburudhoo']['Mandhoo'] = '15:35pm,17:10pm';
 
 // 303
+$data['days']['303-1'] = 'Saturday,Tuesday';
+$data['303-1'][]['Thoddoo']['Rasdhoo'] = '6:30am,8:10am';
+$data['303-1'][]['Rasdhoo']['Thoddoo'] = '15:10pm,16:20pm';
 
-$data['303-1'][]['Thoddoo']['Rasdhoo'] = [
-    'Saturday,Tuesday' => '6:30am,8:10am',
-];
+$data['days']['303-2'] = 'Sunday, Wednesday';
+$data['303-2'][]['Thoddoo']['Rasdhoo'] = '6:30am,7:40am';
+$data['303-2'][]['Rasdhoo']['Ukulhas'] = '7:45am,8:35am';
+$data['303-2'][]['Ukulhas']['Rasdhoo'] = '9:45am,10:35am';
+$data['303-2'][]['Rasdhoo']['Male’'] = '11:00am,14:10pm';
 
-$data['303-1'][]['Rasdhoo']['Thoddoo'] = [
-    'Saturday,Tuesday' => '15:10pm,16:20pm',
-];
-		
-$data['303-2'][]['Thoddoo']['Rasdhoo'] = [
-    'Sunday, Wednesday' => '6:30am,7:40am',
-];
-
-$data['303-2'][]['Rasdhoo']['Ukulhas'] = [
-    'Sunday, Wednesday' => '7:45am,8:35am',
-];
-
-$data['303-2'][]['Ukulhas']['Rasdhoo'] = [
-    'Sunday, Wednesday' => '9:45am,10:35am',
-];
-
-$data['303-2'][]['Rasdhoo']['Male’'] = [
-    'Sunday, Wednesday' => '11:00am,14:10pm',
-];
-
-
-$data['303-3'][]['Male’']['Rasdhoo'] = [
-    'Monday, Thursday' => '9:00am,12:10pm',
-];
-
-$data['303-3'][]['Rasdhoo']['Ukulhas'] = [
-    'Monday, Thursday' => '12:15pm,13:05pm',
-];
-
-$data['303-3'][]['Ukulhas']['Rasdhoo'] = [
-    'Monday, Thursday' => '14:00pm,14:50pm',
-];
-
-$data['303-3'][]['Rasdhoo']['Thoddoo'] = [
-    'Monday, Thursday' => '15:10pm,16:20pm',
-];
-
+$data['days']['303-3'] = 'Monday, Thursday';
+$data['303-3'][]['Male’']['Rasdhoo'] = '9:00am,12:10pm';
+$data['303-3'][]['Rasdhoo']['Ukulhas'] = '12:15pm,13:05pm';
+$data['303-3'][]['Ukulhas']['Rasdhoo'] = '14:00pm,14:50pm';
+$data['303-3'][]['Rasdhoo']['Thoddoo'] = '15:10pm,16:20pm';
 // 304
-
-$data['304'][]['Fenfushi']['Maamigili'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '6:30am,6:55am',
-];
-
-$data['304'][]['Maamigili']['Dhidhdhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:00am,7:25am',
-];
-
-$data['304'][]['Dhidhdhoo']['Dhigurah'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:30am,8:00am',
-];
-
-$data['304'][]['Dhigurah']['Dha’ngethi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:05am,8:35am',
-];
-
-$data['304'][]['Dha’ngethi']['Mahibadhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:40am,9:40am',
-];
-
-$data['304'][]['Mahibadhoo']['Dha’ngethi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '13:30pm,14:30pm',
-];
-
-$data['304'][]['Dha’ngethi']['Dhigurah'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:35pm,15:05pm',
-];
-
-$data['304'][]['Dhigurah']['Dhidhdhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:10pm,15:40pm',
-];
-
-$data['304'][]['Dhidhdhoo']['Maamigili'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:45pm,16:10pm',
-];
-
-$data['304'][]['Maamigili']['Fenfushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:15pm,16:40pm',
-];
-
+$data['days']['304'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['304'][]['Fenfushi']['Maamigili'] = '6:30am,6:55am';
+$data['304'][]['Maamigili']['Dhidhdhoo'] = '7:00am,7:25am';
+$data['304'][]['Dhidhdhoo']['Dhigurah'] = '7:30am,8:00am';
+$data['304'][]['Dhigurah']['Dha’ngethi'] = '8:05am,8:35am';
+$data['304'][]['Dha’ngethi']['Mahibadhoo'] = '8:40am,9:40am';
+$data['304'][]['Mahibadhoo']['Dha’ngethi'] = '13:30pm,14:30pm';
+$data['304'][]['Dha’ngethi']['Dhigurah'] = '14:35pm,15:05pm';
+$data['304'][]['Dhigurah']['Dhidhdhoo'] = '15:10pm,15:40pm';
+$data['304'][]['Dhidhdhoo']['Maamigili'] = '15:45pm,16:10pm';
+$data['304'][]['Maamigili']['Fenfushi'] = '16:15pm,16:40pm';
 // 305
-
-$data['305-1'][]['Male’']['Mahibadhoo'] = [
-    'Saturday, Monday, Wednesday' => '8:30am,12:40pm',
-];
-$data['305-2'][]['Mahibadhoo']['Male’'] = [
-    'Sunday, Tuesday, Thursday' => '11:00am,15:20pm',
-];
-
+$data['days']['305-1'] = 'Saturday, Monday, Wednesday';
+$data['305-1'][]['Male’']['Mahibadhoo'] = '8:30am,12:40pm';
+$data['305-2'][]['Mahibadhoo']['Male’'] = '11:00am,15:20pm';
 
 // 306
-$data['306-1'][]['Rakeedhoo']['Keyodhoo'] = [
-    'Saturday, Monday, Wednesday' => '7:00am,8:10am',
-];
+$data['days']['306-1'] = 'Saturday, Monday, Wednesday';
+$data['306-1'][]['Rakeedhoo']['Keyodhoo'] = '7:00am,8:10am';
+$data['306-1'][]['Keyodhoo']['Felidhoo'] = '8:20am,8:30am';
+$data['306-1'][]['Felidhoo']['Thinadhoo'] = '8:40am,8:50am';
+$data['306-1'][]['Thinadhoo']['Fulidhoo'] = '9:00am,10:30am';
+$data['306-1'][]['Fulidhoo']['K.Maafushi'] = '10:45am,12:25pm';
+$data['306-1'][]['K.Maafushi']['Male’'] = '12:35pm,2:05pm';
 
-$data['306-1'][]['Keyodhoo']['Felidhoo'] = [
-    'Saturday, Monday, Wednesday' => '8:20am,8:30am',
-];
-
-$data['306-1'][]['Felidhoo']['Thinadhoo'] = [
-    'Saturday, Monday, Wednesday' => '8:40am,8:50am',
-];
-
-$data['306-1'][]['Thinadhoo']['Fulidhoo'] = [
-    'Saturday, Monday, Wednesday' => '9:00am,10:30am',
-];
-
-$data['306-1'][]['Fulidhoo']['K.Maafushi'] = [
-    'Saturday, Monday, Wednesday' => '10:45am,12:25pm',
-];
-
-$data['306-1'][]['K.Maafushi']['Male’'] = [
-    'Saturday, Monday, Wednesday' => '12:35pm,2:05pm',
-];
-
-
-$data['306-2'][]['Male’']['K.Maafushi'] = [
-    'Sunday, Tuesday, Thursday' => '10:00am,11:30am',
-];
-
-$data['306-2'][]['K.Maafushi']['Fulidhoo'] = [
-    'Sunday, Tuesday, Thursday' => '11:35am,1:20pm',
-];
-
-$data['306-2'][]['Fulidhoo']['Thinadhoo'] = [
-    'Sunday, Tuesday, Thursday' => '1:30pm,3:00pm',
-];
-
-$data['306-2'][]['Thinadhoo']['Felidhoo'] = [
-    'Sunday, Tuesday, Thursday' => '3:05pm,3:15pm',
-];
-
-$data['306-2'][]['Felidhoo']['Keyodhoo'] = [
-    'Sunday, Tuesday, Thursday' => '3:20pm,3:30pm',
-];
-
-$data['306-2'][]['Keyodhoo']['Rakeedhoo'] = [
-    'Sunday, Tuesday, Thursday' => '3:35pm,4:50pm',
-];
-
+$data['days']['306-2'] = 'Sunday, Tuesday, Thursday';
+$data['306-2'][]['Male’']['K.Maafushi'] = '10:00am,11:30am';
+$data['306-2'][]['K.Maafushi']['Fulidhoo'] = '11:35am,1:20pm';
+$data['306-2'][]['Fulidhoo']['Thinadhoo'] = '1:30pm,3:00pm';
+$data['306-2'][]['Thinadhoo']['Felidhoo'] = '3:05pm,3:15pm';
+$data['306-2'][]['Felidhoo']['Keyodhoo'] = '3:20pm,3:30pm';
+$data['306-2'][]['Keyodhoo']['Rakeedhoo'] = '3:35pm,4:50pm';
 // 307
-$data['307-1'][]['Kaashidhoo']['Gaafaru'] = [
-    'Saturday, Monday, Wednesday' => '7:00am,8:20am',
-];
-
-$data['307-1'][]['Gaafaru']['Male’'] = [
-    'Saturday, Monday, Wednesday' => '8:30am,11:50am',
-];
-
-$data['307-2'][]['Male’']['Gaafaru'] = [
-    'Sunday, Tuesday, Thursday' => '10:45am,12:25pm',
-];
-
-$data['307-2'][]['Gaafaru']['Kaashidhoo'] = [
-    'Sunday, Tuesday, Thursday' => '12:35pm,3:20pm',
-];
-
+$data['days']['307-1'] = 'Saturday, Monday, Wednesday';
+$data['307-1'][]['Kaashidhoo']['Gaafaru'] = '7:00am,8:20am';
+$data['307-1'][]['Gaafaru']['Male’'] = '8:30am,11:50am';
+$days['307-2'] = 'Sunday, Tuesday, Thursday';
+$data['307-2'][]['Male’']['Gaafaru'] = '10:45am,12:25pm';
+$data['307-2'][]['Gaafaru']['Kaashidhoo'] = '12:35pm,3:20pm';
 // 308
-
-$data['308'][]['Dhiffushi']['Thulusdhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '6:30am,7:05am',
-];
-
-$data['308'][]['Thulusdhoo']['Huraa'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:10am,7:35am',
-];
-
-$data['308'][]['Huraa']['Himmafushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:40am,7:55am',
-];
-
-$data['308'][]['Himmafushi']['Male’'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '8:00am,8:40am',
-];
-
-$data['308'][]['Male’']['Himmafushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:30pm,15:10pm',
-];
-
-$data['308'][]['Himmafushi']['Huraa'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:15pm,15:30pm',
-];
-
-$data['308'][]['Huraa']['Thulusdhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:35pm,16:00pm',
-];
-
-$data['308'][]['Thulusdhoo']['Dhiffushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:05pm,16:40pm',
-];
-
+$data['days']['308'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['308'][]['Dhiffushi']['Thulusdhoo'] = '6:30am,7:05am';
+$data['308'][]['Thulusdhoo']['Huraa'] = '7:10am,7:35am';
+$data['308'][]['Huraa']['Himmafushi'] = '7:40am,7:55am';
+$data['308'][]['Himmafushi']['Male’'] = '8:00am,8:40am';
+$data['308'][]['Male’']['Himmafushi'] = '14:30pm,15:10pm';
+$data['308'][]['Himmafushi']['Huraa'] = '15:15pm,15:30pm';
+$data['308'][]['Huraa']['Thulusdhoo'] = '15:35pm,16:00pm';
+$data['308'][]['Thulusdhoo']['Dhiffushi'] = '16:05pm,16:40pm';
 
 // 309
-
-$data['309'][]['Guraidhoo']['K.Maafushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:00am,7:20am',
-];
-
-$data['309'][]['K.Maafushi']['Gulhi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:25am,7:45am',
-];
-
-$data['309'][]['Gulhi']['Male’'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:50am,9:05am',
-];
-
-$data['309'][]['Male’']['Gulhi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:00pm,16:15pm',
-];
-
-$data['309'][]['Gulhi']['K.Maafushi'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:20pm,16:40pm',
-];
-
-$data['309'][]['K.Maafushi']['Guraidhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:45pm,17:05pm',
-];
-
+$data['days']['309'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['309'][]['Guraidhoo']['K.Maafushi'] = '7:00am,7:20am';
+$data['309'][]['K.Maafushi']['Gulhi'] = '7:25am,7:45am';
+$data['309'][]['Gulhi']['Male’'] = '7:50am,9:05am';
+$data['309'][]['Male’']['Gulhi'] = '15:00pm,16:15pm';
+$data['309'][]['Gulhi']['K.Maafushi'] = '16:20pm,16:40pm';
+$data['309'][]['K.Maafushi']['Guraidhoo'] = '16:45pm,17:05pm';
 // 310
-
-$data['310'][]['Feridhoo']['Maalhos'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '6:30am,6:55am',
-];
-
-$data['310'][]['Maalhos']['Himandhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:00am,7:30am',
-];
-
-$data['310'][]['Himandhoo']['Adh.Mahibadhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '7:35am,9:10am',
-];
-
-$data['310'][]['Adh.Mahibadhoo']['Himandhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '14:00pm,15:35pm',
-];
-
-$data['310'][]['Himandhoo']['Maalhos'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '15:40pm,16:10pm',
-];
-
-$data['310'][]['Maalhos']['Feridhoo'] = [
-    'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday' => '16:15pm,16:40pm',
-];
-
+$data['days']['310'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['310'][]['Feridhoo']['Maalhos'] = '6:30am,6:55am';
+$data['310'][]['Maalhos']['Himandhoo'] = '7:00am,7:30am';
+$data['310'][]['Himandhoo']['Adh.Mahibadhoo'] = '7:35am,9:10am';
+$data['310'][]['Adh.Mahibadhoo']['Himandhoo'] = '14:00pm,15:35pm';
+$data['310'][]['Himandhoo']['Maalhos'] = '15:40pm,16:10pm';
+$data['310'][]['Maalhos']['Feridhoo'] = '16:15pm,16:40pm';
 return $data;
 
 	}

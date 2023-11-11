@@ -78,13 +78,16 @@ class Atoll_Ferry_Public {
 		error_log( 'Destination : ' . $destination);
 		error_log( '------------------------------------');
 		//$route = self::find_interconnected_route($departure, $destination, $ferry_schedules);
-		$route = self::can_goto_islands_from($departure, $ferry_schedules);
-		
-		if ($route !== false) {
-			return "Valid Route: " . implode(' -> ', $route);
-		} else {
-			return "Invalid Route: No interconnected route found from $departure to $destination";
-		}
+		$can_go = self::can_goto_islands_from($departure, $ferry_schedules);
+
+		error_log( '------------------------------------');
+		error_log( '----------------Can Go Array --------------------');
+		error_log ( print_r( $can_go, true ) );
+
+		$can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go);
+		error_log( '------------------------------------');
+		error_log( '----------------Can Go List --------------------');
+		error_log( print_r( $can_goto_islands, true ) );
 
 ob_start();
 ?>
@@ -112,25 +115,44 @@ return ob_get_clean();
 
 	}
 
+	public function list_all_islands_in_can_goto_array($data_array) {
+
+		$uniqueIslands = array();
+
+		foreach ($data_array as $schedule) {
+			foreach ($schedule as $record) {
+				$fromIsland = $record['from']['island'];
+				$toIsland = $record['to']['island'];
+
+				// Add from and to islands to the unique islands list
+				$uniqueIslands[$fromIsland] = true;
+				$uniqueIslands[$toIsland] = true;
+			}
+		}
+
+		// Get the list of unique island names
+		$uniqueIslandNames = array_keys($uniqueIslands);
+
+		// Print the result
+		return $uniqueIslandNames;
+	}
+
 	public function can_goto_islands_from($departure, $data_array) {
 		//error_log( '----- the data set' );
 		//error_log( print_r( $data ,true ) );
 
 		$data_sets = ['301','302','303-1','303-2','303-3','304','305-1','305-2','306-1','306-2','307-1','307-2','308','309','310'];
+		$traceroute = array();
 		foreach ($data_sets as $data_set) {
 
 			$route_found = false;
 			$destinationIsland = false;
-			$destination = 'sdkjfhkdjfsh';
+			$destination = '';
 			$schedule = '';
 			$transfer_days = '';
-			$transfer_days_prev = '';
-			$transfer_day_time = '';
 			$time_start = '';
 			$time_end = '';
 			$prev_departureIsland = '';
-	
-			$traceroute = array();
 			$last_stop = array();
 
 			$data = $data_array[$data_set];
@@ -141,7 +163,6 @@ return ob_get_clean();
 					if ( $route_found ) {
 						$count++;
 						if ( $destinationIsland == $departureIsland ) {
-							$transfer_days_prev = $transfer_days;
 							// error_log ( $count . ' ---- ' . $data_set . " Next Departure: $departureIsland" . ' ' . $transfer_day_time );
 							$traceroute[$data_set][$count]['from']['island'] = $prev_departureIsland;
 							$traceroute[$data_set][$count]['from']['time'] = $time_start;
@@ -149,7 +170,7 @@ return ob_get_clean();
 							$traceroute[$data_set][$count]['to']['time'] = $time_end;
 						} else {
 							$route_found = false;
-							$traceroute = array();
+							//$traceroute = array();
 							// error_log ( $data_set . " Route Ended without Reaching" . ' ' . $transfer_day_time );
 						}
 					}
@@ -157,7 +178,7 @@ return ob_get_clean();
 					if ( $departure == $departureIsland ) {
 						// error_log ( $count . ' ---- ' . $data_set . " Departure: $departureIsland" . ' ' . $transfer_day_time );
 						// error_log ( $count . ' ---- ' . $data_set . " Route Started" . ' ' . $transfer_day_time );
-						$traceroute = array();  // Reset for Multiple route checking
+						//$traceroute = array();  // Reset for Multiple route checking
 						//$traceroute[] = $departureIsland . '|' . $transfer_day_time;
 						$route_found = true;
 					}
@@ -177,7 +198,6 @@ return ob_get_clean();
 								$time_start = trim($times[0]);
 								$time_end = trim($times[1]);
 							}
-							$transfer_day_time = $transfer_days . ' ' . $transfer_time;
 						}
 	
 						// Output departure and destination
@@ -192,14 +212,6 @@ return ob_get_clean();
 							$last_stop['from']['time'] = $time_start;
 							$last_stop['to']['island'] = $destinationIsland;
 							$last_stop['to']['time'] = $time_end;
-							
-							if ( $destination == $destinationIsland ) {
-								// error_log ( $data_set . " Destination Reached: $destinationIsland" );
-								$traceroute[] = $destinationIsland . '|' . $transfer_day_time;
-								$route_found = false; // Finished route
-								// error_log ( print_r( $traceroute, true ) );
-								$traceroute = array();
-							}
 						}
 					}
 				}
@@ -210,12 +222,10 @@ return ob_get_clean();
 				$traceroute[$data_set][$count]['from']['time'] = $last_stop['from']['time'];
 				$traceroute[$data_set][$count]['to']['island'] = $last_stop['to']['island'];
 				$traceroute[$data_set][$count]['to']['time'] = $last_stop['to']['time'];
-
-				error_log ( print_r( $traceroute, true ) );
 			}
 		}
 		
-		return false; // No valid route found
+		return $traceroute; // No valid route found
 	}
 
 	public function find_interconnected_route($departure, $destination, $data, $visited = []) {
@@ -674,7 +684,7 @@ $data['307-1'][]['Kaashidhoo']['Gaafaru'] = [
     'Saturday, Monday, Wednesday' => '7:00am,8:20am',
 ];
 
-$data['307-1']['Gaafaru']['Male’'] = [
+$data['307-1'][]['Gaafaru']['Male’'] = [
     'Saturday, Monday, Wednesday' => '8:30am,11:50am',
 ];
 

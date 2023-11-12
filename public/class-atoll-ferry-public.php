@@ -69,7 +69,7 @@ class Atoll_Ferry_Public {
 		$ferry_schedules = self::get_ferry_schedule();
 
 		// Example usage
-		$departure = 'Male’';
+		$departure = 'Thoddoo';
 		$destination = 'K.Maafushi';
 
 		error_log( '------------------------------------');
@@ -90,6 +90,8 @@ class Atoll_Ferry_Public {
 		error_log( print_r( $can_goto_islands, true ) );
 
 ob_start();
+$destination = "Rasdhoo";
+echo self::visual_can_goto_array( $can_go, $destination );
 ?>
     <div id="speedboat-search">
         <label for="island-select">Departure Island:</label>
@@ -109,10 +111,60 @@ ob_start();
         <button id="search-btn">Search</button>
 
         <div id="schedule-output"></div>
+
     </div>
 <?php
 return ob_get_clean();
 
+	}
+
+	public function data_sets() {
+		$data_sets = ['301','302','303-1','303-2','303-3','304','305-1','305-2','306-1','306-2','307-1','307-2','308','309','310'];
+
+		return $data_sets;
+	}
+
+	public function visual_can_goto_array( $can_go, $destination ) {
+
+		$route = '';
+		$count = 0;
+		foreach ($can_go as $schedule) {
+
+			$route .= '<div class="interconnected-route">';
+			foreach ($schedule as $record) {
+				$fromIsland = $record['from']['island'];
+				$fromTime = $record['from']['time'];
+				$toIsland = $record['to']['island'];
+				$toTime = $record['to']['time'];
+
+				$count++;
+
+				$destination_mark = '';
+				if ( $destination == $toIsland ) {
+					$destination_mark = 'destination-mark';
+				}
+
+				$arrow = '<i class="fa-solid fa-arrow-right-long"></i>';
+
+				if ( 1 == $count ) {
+					$route .= '<span class="from-point-of-departure">';
+				}
+				$route .= '<span class="from-island '. $destination_mark .'"><span class="from-time">'. $fromTime .'</span>';
+				$route .= '<span class="from-island-name">'.$fromIsland.'</span>';
+				$route .= '</span>';
+				$route .= '</span>';
+				$route .= $arrow;
+				$route .= '<span class="up-to-arrow">';
+				$route .= '<span class="to-island '. $destination_mark .'"><span class="to-time">'. $toTime .'</span>';
+				$route .= '<span class="to-island-name">'.$toIsland.'</span>';
+				$route .= '</span>';
+
+			}
+			$route .= '</span>';
+			$route .= '</div>';
+		}
+
+		return $route;
 	}
 
 	public function list_all_islands_in_can_goto_array($data_array) {
@@ -141,7 +193,7 @@ return ob_get_clean();
 		//error_log( '----- the data set' );
 		//error_log( print_r( $data ,true ) );
 
-		$data_sets = ['301','302','303-1','303-2','303-3','304','305-1','305-2','306-1','306-2','307-1','307-2','308','309','310'];
+		$data_sets = self::data_sets();
 		$traceroute = array();
 		foreach ($data_sets as $data_set) {
 

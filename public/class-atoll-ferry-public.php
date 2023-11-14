@@ -54,12 +54,12 @@ class Atoll_Ferry_Public {
 
 		add_shortcode('ferryfinder', array($this, 'ferry_schedule_finder'));
 
-		// add_action('wp_ajax_get_schedule_for_departure_island', array($this, 'get_schedule_for_departure_island_callback'));
-		// add_action('wp_ajax_nopriv_get_schedule_for_departure_island', array($this, 'get_schedule_for_departure_island_callback'));
+		add_action('wp_ajax_get_all_schedules_for_departure_island', array($this, 'get_all_schedules_for_departure_island'));
+		add_action('wp_ajax_nopriv_get_all_schedules_for_departure_island', array($this, 'get_all_schedules_for_departure_island'));
 
 		// Add this function to functions.php or your plugin file
-		add_action('wp_ajax_get_interconnected_ferry_schedules', array($this,  'get_interconnected_ferry_schedules'));
-		add_action('wp_ajax_nopriv_get_interconnected_ferry_schedules', array($this,  'get_interconnected_ferry_schedules'));
+		// add_action('wp_ajax_get_interconnected_ferry_schedules', array($this,  'get_interconnected_ferry_schedules'));
+		//add_action('wp_ajax_nopriv_get_interconnected_ferry_schedules', array($this,  'get_interconnected_ferry_schedules'));
 
 
 	}
@@ -69,8 +69,8 @@ class Atoll_Ferry_Public {
 		$ferry_schedules = self::get_ferry_schedule();
 
 		// Example usage
-		$departure = 'Thoddoo';
-		$destination = 'K.Maafushi';
+		$departure = 'Male’';
+		$destination = 'Maafushi';
 
 		error_log( '------------------------------------');
 		error_log( 'Initiating route to new destination');
@@ -90,8 +90,6 @@ class Atoll_Ferry_Public {
 		error_log( print_r( $can_goto_islands, true ) );
 
 ob_start();
-$destination = "Rasdhoo";
-echo self::visual_can_goto_array( $can_go, $destination );
 ?>
     <div id="speedboat-search">
         <label for="island-select">Departure Island:</label>
@@ -101,17 +99,16 @@ echo self::visual_can_goto_array( $can_go, $destination );
 			echo self::create_select_list( $ferry_schedules );
 			?>
         </select>
-        <select id="island-destination">
-            <!-- Add departure islands dynamically if needed -->
-            <?php
-			echo self::create_select_list( $ferry_schedules );
-			?>
-        </select>
-
-        <button id="search-btn">Search</button>
+		<div class="loader-ellipsis-wrap">
+			<div class="loader-ellipsis-wrap-inner">
+				<div class="loader-ellipsis"><div></div><div></div><div></div><div></div></div>
+			</div>
+		</div>
 
         <div id="schedule-output"></div>
-
+<?php
+		// echo self::visual_can_goto_array( $can_go, $destination );
+?>
     </div>
 <?php
 return ob_get_clean();
@@ -127,10 +124,33 @@ return ob_get_clean();
 	public function visual_can_goto_array( $can_go, $destination ) {
 
 		$route = '';
-		$count = 0;
-		foreach ($can_go as $schedule) {
 
-			$route .= '<div class="interconnected-route">';
+		$ferry_schedules = self::get_ferry_schedule();
+
+		$can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go) ;
+
+		$route .= '<div id="main-island-filter">';
+		$route .= '<h6>Ferry destinations</h6>';
+		foreach ( $can_goto_islands as $index => $uniqueIslands ) {
+			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.'">'.$uniqueIslands.'</span>';
+		}
+		$route .= '</div>';
+		
+		foreach ($can_go as $index => $schedule) {
+			$count = 0;
+
+			$island_names = '';
+			$filter_islands = self::list_all_islands_in_schedule_array( $schedule ) ;
+
+			foreach ( $filter_islands as $uniqueIslands ) {
+				$island_names .= ' filter-' . $uniqueIslands;
+			}
+
+			$route .= '<div class="interconnected-route '. $island_names . '">';
+			$route .= '<div class="interconnected-route-days">';
+			$route .= $ferry_schedules['days'][$index];
+			$route .= '</div>';
+
 			foreach ($schedule as $record) {
 				$fromIsland = $record['from']['island'];
 				$fromTime = $record['from']['time'];
@@ -145,18 +165,20 @@ return ob_get_clean();
 				}
 
 				$arrow = '<i class="fa-solid fa-arrow-right-long"></i>';
+				$arrow = '<span class="right-arrow"></span>';
 
 				if ( 1 == $count ) {
 					$route .= '<span class="from-point-of-departure">';
 				}
 				$route .= '<span class="from-island '. $destination_mark .'"><span class="from-time">'. $fromTime .'</span>';
-				$route .= '<span class="from-island-name">'.$fromIsland.'</span>';
+				$route .= '<span class="from-island-name tag-island tag-'.$fromIsland.'">'.$fromIsland.'</span>';
 				$route .= '</span>';
+
 				$route .= '</span>';
 				$route .= $arrow;
 				$route .= '<span class="up-to-arrow">';
 				$route .= '<span class="to-island '. $destination_mark .'"><span class="to-time">'. $toTime .'</span>';
-				$route .= '<span class="to-island-name">'.$toIsland.'</span>';
+				$route .= '<span class="to-island-name tag-island tag-'.$toIsland.'">'.$toIsland.'</span>';
 				$route .= '</span>';
 
 			}
@@ -165,6 +187,26 @@ return ob_get_clean();
 		}
 
 		return $route;
+	}
+
+	public function list_all_islands_in_schedule_array($schedule) {
+
+		$uniqueIslands = array();
+
+		foreach ($schedule as $record) {
+			$fromIsland = $record['from']['island'];
+			$toIsland = $record['to']['island'];
+
+			// Add from and to islands to the unique islands list
+			$uniqueIslands[$fromIsland] = true;
+			$uniqueIslands[$toIsland] = true;
+		}
+
+		// Get the list of unique island names
+		$uniqueIslandNames = array_keys($uniqueIslands);
+
+		// Print the result
+		return $uniqueIslandNames;
 	}
 
 	public function list_all_islands_in_can_goto_array($data_array) {
@@ -328,23 +370,30 @@ return ob_get_clean();
 		return false; // No valid route found
 	}
 
-	public function create_select_list($data) {
+	public function create_select_list($data_array) {
 		$islands = [];
 	
-		// Loop through the $data array to collect unique island names
-		foreach ($data as $departureIsland => $arrivalData) {
-			$islands[] = $departureIsland;
-			foreach ($arrivalData as $arrivalIsland => $schedule) {
-				$islands[] = $arrivalIsland;
+		$data_sets = self::data_sets();
+
+		foreach ($data_sets as $data_set) {
+
+			$data = $data_array[$data_set];
+			// Loop through the $data array to collect unique island names
+			foreach ($data as $departureIsland => $arrivalData) {
+				//$islands[] = $departureIsland;
+				foreach ($arrivalData as $arrivalIsland => $schedule) {
+					$islands[] = $arrivalIsland;
+				}
 			}
 		}
-	
+		
 		// Remove duplicates and sort the island names
 		$uniqueIslands = array_unique($islands);
 		sort($uniqueIslands);
 	
 		$selectList = '';
 		// Create a select list
+		$selectList .= '<option value="none">' . __('Choose depature island') . '</option>';
 		foreach ($uniqueIslands as $island) {
 			$selectList .= '<option value="' . $island . '">' . $island . '</option>';
 		}
@@ -378,7 +427,7 @@ return ob_get_clean();
 	
 			// Format the output string
 			foreach ($interconnectedIslands as $island) {
-				$schedules .= "Island: $island<br>"; // You can add more details here based on your needs
+				$schedules .= "Island: $island<br>";
 			}
 		} else {
 			$schedules = "Invalid departure or destination island.";
@@ -409,18 +458,21 @@ return ob_get_clean();
 	}
 	
 
-	public function get_schedule_for_departure_island_callback() {
+	public function get_all_schedules_for_departure_island() {
 		$selectedIsland = $_POST['selectedIsland'];
-		$ferry_schedule_data = self::get_ferry_schedule();
 	
 		// Call the existing PHP function to get the schedule
-		$scheduleOutput = self::get_schedule_for_departure_island($selectedIsland, $ferry_schedule_data);
-		$scheduleOutput .= '<hr/>';
+		//$scheduleOutput = self::get_schedule_for_departure_island($selectedIsland, $ferry_schedule_data);
+		//$scheduleOutput .= '<hr/>';
 		//$scheduleOutput .= self::get_schedule_for_destination_island($selectedIsland, $ferry_schedule_data);
+
+		$ferry_schedules = self::get_ferry_schedule();
+		$can_go = self::can_goto_islands_from($selectedIsland, $ferry_schedules);
+		$scheduleOutput = self::visual_can_goto_array( $can_go, $selectedIsland );;
 	
 		echo $scheduleOutput;
 	
-		wp_die(); // Always include this line to terminate the script
+		wp_die();
 	}
 
 	public function get_schedule_for_destination_island($selectedIsland, $data) {
@@ -551,16 +603,16 @@ $data['305-2'][]['Mahibadhoo']['Male’'] = '11:00am,15:20pm';
 $data['days']['306-1'] = 'Saturday, Monday, Wednesday';
 $data['306-1'][]['Rakeedhoo']['Keyodhoo'] = '7:00am,8:10am';
 $data['306-1'][]['Keyodhoo']['Felidhoo'] = '8:20am,8:30am';
-$data['306-1'][]['Felidhoo']['Thinadhoo'] = '8:40am,8:50am';
-$data['306-1'][]['Thinadhoo']['Fulidhoo'] = '9:00am,10:30am';
-$data['306-1'][]['Fulidhoo']['K.Maafushi'] = '10:45am,12:25pm';
-$data['306-1'][]['K.Maafushi']['Male’'] = '12:35pm,2:05pm';
+$data['306-1'][]['Felidhoo']['Vaavu-Thinadhoo'] = '8:40am,8:50am';
+$data['306-1'][]['Vaavu-Thinadhoo']['Fulidhoo'] = '9:00am,10:30am';
+$data['306-1'][]['Fulidhoo']['Maafushi'] = '10:45am,12:25pm';
+$data['306-1'][]['Maafushi']['Male’'] = '12:35pm,2:05pm';
 
 $data['days']['306-2'] = 'Sunday, Tuesday, Thursday';
-$data['306-2'][]['Male’']['K.Maafushi'] = '10:00am,11:30am';
-$data['306-2'][]['K.Maafushi']['Fulidhoo'] = '11:35am,1:20pm';
-$data['306-2'][]['Fulidhoo']['Thinadhoo'] = '1:30pm,3:00pm';
-$data['306-2'][]['Thinadhoo']['Felidhoo'] = '3:05pm,3:15pm';
+$data['306-2'][]['Male’']['Maafushi'] = '10:00am,11:30am';
+$data['306-2'][]['Maafushi']['Fulidhoo'] = '11:35am,1:20pm';
+$data['306-2'][]['Fulidhoo']['Vaavu-Thinadhoo'] = '1:30pm,3:00pm';
+$data['306-2'][]['Vaavu-Thinadhoo']['Felidhoo'] = '3:05pm,3:15pm';
 $data['306-2'][]['Felidhoo']['Keyodhoo'] = '3:20pm,3:30pm';
 $data['306-2'][]['Keyodhoo']['Rakeedhoo'] = '3:35pm,4:50pm';
 // 307
@@ -583,12 +635,12 @@ $data['308'][]['Thulusdhoo']['Dhiffushi'] = '16:05pm,16:40pm';
 
 // 309
 $data['days']['309'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['309'][]['Guraidhoo']['K.Maafushi'] = '7:00am,7:20am';
-$data['309'][]['K.Maafushi']['Gulhi'] = '7:25am,7:45am';
+$data['309'][]['Guraidhoo']['Maafushi'] = '7:00am,7:20am';
+$data['309'][]['Maafushi']['Gulhi'] = '7:25am,7:45am';
 $data['309'][]['Gulhi']['Male’'] = '7:50am,9:05am';
 $data['309'][]['Male’']['Gulhi'] = '15:00pm,16:15pm';
-$data['309'][]['Gulhi']['K.Maafushi'] = '16:20pm,16:40pm';
-$data['309'][]['K.Maafushi']['Guraidhoo'] = '16:45pm,17:05pm';
+$data['309'][]['Gulhi']['Maafushi'] = '16:20pm,16:40pm';
+$data['309'][]['Maafushi']['Guraidhoo'] = '16:45pm,17:05pm';
 // 310
 $data['days']['310'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
 $data['310'][]['Feridhoo']['Maalhos'] = '6:30am,6:55am';
@@ -622,13 +674,14 @@ return $data;
 
 		wp_enqueue_style( $this->atoll_ferry, plugin_dir_url( __FILE__ ) . 'css/atoll-ferry-public.css', array(), $this->version, 'all' );
 
-        wp_register_style('fontawesome-6', plugin_dir_url(__FILE__) . 'css/fonts/fontawesome-free-6.4.0-web/css/fontawesome.css', false, 'screen');
-        wp_register_style('fontawesome-6-brands', plugin_dir_url(__FILE__) . 'css/fonts/fontawesome-free-6.4.0-web/css/all.css', false, 'screen');
-        wp_register_style('fontawesome-6-solid', plugin_dir_url(__FILE__) . 'css/fonts/fontawesome-free-6.4.0-web/css/solid.css', false, 'screen');
+		wp_enqueue_script('velocity', plugin_dir_url(__FILE__) . 'js/velocity.min.js', array('jquery'), null, true);
+		wp_enqueue_script('velocity-ui', plugin_dir_url(__FILE__) . 'js/velocity.ui.js', array('jquery'), null, true);
 
-		wp_enqueue_style('fontawesome-6');
-		wp_enqueue_style('fontawesome-6-brands');
-		wp_enqueue_style('fontawesome-6-solid');
+		wp_register_script('select2', plugin_dir_url(__FILE__) . 'js/select2/js/select2.full.min.js', array('jquery'), null, true);
+        wp_register_style('select2', plugin_dir_url(__FILE__) . 'js/select2/css/select2.min.css', array(), false, 'screen');
+
+		wp_enqueue_script('select2');
+		wp_enqueue_style('select2');
 
 	}
 

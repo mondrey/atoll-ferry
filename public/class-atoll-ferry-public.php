@@ -183,8 +183,15 @@ return ob_get_clean();
 
 		$route .= '<div id="main-island-filter">';
 		$route .= '<h6>Ferry destinations</h6>';
+
+		
+		
 		foreach ( $can_goto_islands as $index => $uniqueIslands ) {
-			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.'">'. $got_island_names[ $uniqueIslands ].'</span>';
+			$starting_point_class = '';
+			if ( $destination == $uniqueIslands ) {
+				$starting_point_class = " departure-filter";
+			}
+			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.$starting_point_class.'">'. $got_island_names[ $uniqueIslands ].'</span>';
 		}
 		$route .= '</div>';
 		

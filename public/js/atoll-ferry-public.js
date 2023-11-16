@@ -139,7 +139,7 @@ function updateScheduleForSelectedIsland(selectedIsland, nonce) {
                 var select2Value = selectedIsland; // Assuming select2Value is the selected value
 
                 // Construct the destination URL
-                var destinationUrl = baseUrl + '?destination=' + select2Value;
+                var destinationUrl = baseUrl + '?departure=' + select2Value;
 
                 // Update the #share-destination-url DIV
                 $('#share-departure-url').text(destinationUrl);

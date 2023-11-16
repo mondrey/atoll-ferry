@@ -1,6 +1,38 @@
 jQuery(document).ready(function ($) {
 
 
+    function copyUrlToClipboard() {
+        // Select the DIV containing the URL
+        var urlDiv = $('#share-departure-url'); // Replace 'your-url-div-id' with the actual ID of your DIV
+    
+        // Create a temporary input element
+        var tempInput = $('<input>');
+    
+        // Set the input's value to the text content of the URL DIV
+        tempInput.val(urlDiv.text());
+    
+        // Append the input to the body
+        $('body').append(tempInput);
+    
+        // Select the input's content
+        tempInput.select();
+    
+        // Copy the selected content to the clipboard
+        document.execCommand('copy');
+    
+        // Remove the temporary input
+        tempInput.remove();
+    
+        // Optionally, provide some visual feedback to the user
+        $('.share-button-text').text('Copied').addClass('copied');
+        $('#copy-shareurl-button').addClass('copied');
+    }
+    
+    // Example: Call the function on a button click
+    $(document).on('click', '#copy-shareurl-button', function () {
+        copyUrlToClipboard();
+    });
+
 // Function to add scroll event listener to containers with overflow using jQuery
 function addScrollListenerToContainersWithOverflow() {
     // Get all containers with the specified class
@@ -43,28 +75,78 @@ function addScrollListenerToContainersWithOverflow() {
         $('#island-select').select2({
             width: '200px'
         });
-    }
 
-    $('#island-select').change(function () {
-        var selectedIsland = $(this).val();
-        console.log( selectedIsland );
-        $('.loader-ellipsis-wrap-inner').show();
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            data: {
-                action: 'get_all_schedules_for_departure_island',
-                selectedIsland: selectedIsland,
-            },
-            success: function (response) {
-                // Display the response in a container (e.g., div with id 'schedule-output')
-                console.log( response );
-                $('.loader-ellipsis-wrap-inner').hide();
-                $('#schedule-output').html(response);
-                addScrollListenerToContainersWithOverflow(); // Add scroll listener after content is loaded
-            },
-        });
+        // Parse the URL to get the value of the 'departure' parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const departure = urlParams.get('departure');
+
+        // Check if the departure exists and set it in the Select2 dropdown
+        if (departure) {
+            // Set the selected value directly
+            $('#island-select').val(departure).trigger('change');
+
+            // Perform the AJAX request for the selected island
+            updateScheduleForSelectedIsland(departure);
+        }
+    }
+// Event listener for select change
+$('#island-select').change(function () {
+    var selectedIsland = $(this).val();
+    console.log(selectedIsland);
+    $('.loader-ellipsis-wrap-inner').show();
+
+    // Retrieve the nonce from the server (assuming it's included in the AJAX response)
+    $.ajax({
+        type: 'POST',
+        url: ajax_object.ajax_url,
+        data: {
+            action: 'get_all_schedules_for_departure_island',
+            selectedIsland: selectedIsland,
+        },
+        success: function (response) {
+            // Check if the nonce is present in the response
+            if (response.success && response.data.nonce) {
+                var nonce = response.data.nonce;
+
+                // Perform the AJAX request for the selected island with the nonce
+                updateScheduleForSelectedIsland(selectedIsland, nonce);
+            }
+        },
     });
+});
+
+// Function to update schedule based on the selected island and nonce
+function updateScheduleForSelectedIsland(selectedIsland, nonce) {
+    $.ajax({
+        type: 'POST',
+        url: ajax_object.ajax_url,
+        data: {
+            action: 'get_all_schedules_for_departure_island',
+            selectedIsland: selectedIsland,
+            nonce: nonce, // Include the nonce in the request
+        },
+        success: function (response) {
+            // Check if the nonce is present in the response
+            if (response.success && response.data.html) {
+                // Display the response in a container (e.g., div with id 'schedule-output')
+                console.log(response);
+                $('.loader-ellipsis-wrap-inner').hide();
+                $('#schedule-output').html(response.data.html);
+                addScrollListenerToContainersWithOverflow(); // Add scroll listener after content is loaded
+
+                // Update the #share-destination-url with the selected value
+                var baseUrl = window.location.origin + window.location.pathname; // Get the current base URL
+                var select2Value = selectedIsland; // Assuming select2Value is the selected value
+
+                // Construct the destination URL
+                var destinationUrl = baseUrl + '?destination=' + select2Value;
+
+                // Update the #share-destination-url DIV
+                $('#share-departure-url').text(destinationUrl);
+            }
+        },
+    });
+}
 
     $(document).on('click', '.island-filters', function () {
 

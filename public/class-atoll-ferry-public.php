@@ -80,22 +80,22 @@ class Atoll_Ferry_Public {
 		$departure = 'Male’';
 		$destination = 'Maafushi';
 
-		error_log( '------------------------------------');
-		error_log( 'Initiating route to new destination');
-		error_log( 'Departure : ' . $departure);
-		error_log( 'Destination : ' . $destination);
-		error_log( '------------------------------------');
-		//$route = self::find_interconnected_route($departure, $destination, $ferry_schedules);
-		$can_go = self::can_goto_islands_from($departure, $ferry_schedules);
+		// error_log( '------------------------------------');
+		// error_log( 'Initiating route to new destination');
+		// error_log( 'Departure : ' . $departure);
+		// error_log( 'Destination : ' . $destination);
+		// error_log( '------------------------------------');
+		// //$route = self::find_interconnected_route($departure, $destination, $ferry_schedules);
+		// $can_go = self::can_goto_islands_from($departure, $ferry_schedules);
 
-		error_log( '------------------------------------');
-		error_log( '----------------Can Go Array --------------------');
-		error_log ( print_r( $can_go, true ) );
+		// error_log( '------------------------------------');
+		// error_log( '----------------Can Go Array --------------------');
+		// error_log ( print_r( $can_go, true ) );
 
-		$can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go);
-		error_log( '------------------------------------');
-		error_log( '----------------Can Go List --------------------');
-		error_log( print_r( $can_goto_islands, true ) );
+		// $can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go);
+		// error_log( '------------------------------------');
+		// error_log( '----------------Can Go List --------------------');
+		// error_log( print_r( $can_goto_islands, true ) );
 
 ob_start();
 ?>
@@ -251,6 +251,10 @@ return ob_get_clean();
 			$route .= '</div>';
 			$route .= '</div>';
 		}
+
+		$share_svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>';
+
+		$route .= '<div id="share-departure-url"></div><div id="copy-shareurl-button">'.$share_svg_icon.'<span class="share-button-text">Share</span></div>';
 
 		return $route;
 	}
@@ -528,19 +532,23 @@ return ob_get_clean();
 	public function get_all_schedules_for_departure_island() {
 		$selectedIsland = $_POST['selectedIsland'];
 	
+		// Generate a nonce
+		$nonce = wp_create_nonce('my_custom_nonce');
+	
 		// Call the existing PHP function to get the schedule
 		//$scheduleOutput = self::get_schedule_for_departure_island($selectedIsland, $ferry_schedule_data);
 		//$scheduleOutput .= '<hr/>';
 		//$scheduleOutput .= self::get_schedule_for_destination_island($selectedIsland, $ferry_schedule_data);
-
+	
 		$ferry_schedules = self::get_ferry_schedule();
 		$can_go = self::can_goto_islands_from($selectedIsland, $ferry_schedules);
-		$scheduleOutput = self::visual_can_goto_array( $can_go, $selectedIsland );;
+		$scheduleOutput = self::visual_can_goto_array($can_go, $selectedIsland);
 	
-		echo $scheduleOutput;
+		// Include the nonce in the response
+		wp_send_json_success(array('html' => $scheduleOutput, 'nonce' => $nonce));
 	
-		wp_die();
-	}
+		wp_die(); // Exit after sending JSON response
+	}	
 
 	public function get_schedule_for_destination_island($selectedIsland, $data) {
 		$scheduleOutput = '';

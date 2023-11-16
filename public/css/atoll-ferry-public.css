@@ -1,6 +1,5 @@
 /**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
+ * All of the CSS
  */
 
  .loader-ellipsis-wrap {
@@ -240,4 +239,42 @@
 	font-size: 28px;
 	text-transform: none;
 	margin-bottom: 30px;
+}
+
+#share-departure-url {
+	font-size: 13px;
+	background: #ffff5175;
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: 6px;
+	margin-top: 40px;
+}
+#copy-shareurl-button svg {
+	width: 15px;
+}
+#copy-shareurl-button {
+	font-size: 15px;
+	border: 1px solid #4f00fc;
+	display: inline-block;
+	border-radius: 8px;
+	padding: 2px 14px 2px 28px;
+	position: relative;
+	color: #4f00fc;
+	margin-left: 6px;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: opacity 0.4s;
+}
+#copy-shareurl-button:hover {
+	opacity: 1;
+}
+#copy-shareurl-button.copied {
+	background: #4f00fc;
+	color: #fff;
+}
+#copy-shareurl-button svg {
+	width: 15px;
+	position: absolute;
+	left: 6px;
+	top: 1px;
 }

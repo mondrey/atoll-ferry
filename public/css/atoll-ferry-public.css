@@ -240,9 +240,16 @@
 }
 
 #schedule-output h6 {
-	font-size: 28px;
+	font-size: 38px;
 	text-transform: none;
-	margin-bottom: 30px;
+	margin-bottom: 50px;
+	letter-spacing: -1px;
+	font-weight: 200;
+	line-height: 1.2;
+	margin-top: 0;
+}
+#schedule-output h6 span {
+	font-weight: 400;
 }
 
 #share-departure-url {

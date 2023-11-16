@@ -182,10 +182,10 @@ return ob_get_clean();
 		$can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go) ;
 
 		$route .= '<div id="main-island-filter">';
-		$route .= '<h6>Ferry destinations</h6>';
+		$route .= '<h6>Destinations from <span>'.$got_island_names[ $destination ].'</span></h6>';
 
 		
-		
+		$route .= '<div class="sub-island-filters">';
 		foreach ( $can_goto_islands as $index => $uniqueIslands ) {
 			$starting_point_class = '';
 			if ( $destination == $uniqueIslands ) {
@@ -193,6 +193,7 @@ return ob_get_clean();
 			}
 			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.$starting_point_class.'">'. $got_island_names[ $uniqueIslands ].'</span>';
 		}
+		$route .= '</div>';
 		$route .= '</div>';
 		
 		foreach ($can_go as $index => $schedule) {

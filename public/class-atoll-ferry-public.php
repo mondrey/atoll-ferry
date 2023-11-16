@@ -64,6 +64,14 @@ class Atoll_Ferry_Public {
 
 	}
 
+	public function get_disclaimer() {
+		$disclaimer = 'Disclaimer:';
+		$disclaimer .= '<p>The information provided for public ferry schedules is sourced from the MTCC (Maldives Transport and Contracting Company) website. Although we have taken measures to ensure data accuracy, please note that schedules may be subject to change, and it is advisable to check with MTCC for the most up-to-date information.</p>';
+		$disclaimer .= '<p>Source PDF: <a href="https://mtcc.mv/wp-content/uploads/2022/05/CTN-Ferry-Schedule-Effective-15.05.2022-K.And-Aa.-Adh.V.pdf" target="_blank">MTCC Ferry Schedule PDF</a> ( 15th March 2022 )</p>';
+		$disclaimer .= '<p>Source Website: <a href="https://mtcc.mv/" target="_blank">MTCC</a></p>';
+		return $disclaimer;
+	}
+
 	public function ferry_schedule_finder() {
 
 		$ferry_schedules = self::get_ferry_schedule();
@@ -106,6 +114,8 @@ ob_start();
 		</div>
 
         <div id="schedule-output"></div>
+		<div class="disclaimer-wrap">
+			<?php echo self::get_disclaimer(); ?>
 <?php
 		// echo self::visual_can_goto_array( $can_go, $destination );
 ?>
@@ -113,6 +123,47 @@ ob_start();
 <?php
 return ob_get_clean();
 
+	}
+
+	public function get_island_names() {
+		$islands = array(
+			'DGU' => 'Dhigurah',
+			'DHS' => 'Dhiffushi',
+			'MMI' => 'Maamigili',
+			'MLH' => 'Maalhos',
+			'HMA' => 'Himandhoo',
+			'HIM' => 'Himmafushi',
+			'MAA' => 'Maafushi',
+			'FER' => 'Feridhoo',
+			'MAT' => 'Mathiveri',
+			'BOD' => 'Bodufolhudhoo',
+			'UKU' => 'Ukulhas',
+			'RAS' => 'Rasdhoo',
+			'MAN' => 'Mandhoo',
+			'KUN' => 'Ku’nburudhoo',
+			'MAH' => 'Mahibadhoo',
+			'HAN' => 'Hangnaameedhoo',
+			'OMA' => 'Omadhoo',
+			'THO' => 'Thoddoo',
+			'MAL' => 'Male’',
+			'FEN' => 'Fenfushi',
+			'DHI' => 'Dhidhdhoo',
+			'DHA' => 'Dha’ngethi',
+			'RAK' => 'Rakeedhoo',
+			'KEY' => 'Keyodhoo',
+			'FEL' => 'Felidhoo',
+			'VTH' => 'V.Thinadhoo',
+			'FUL' => 'Fulidhoo',
+			'KAA' => 'Kaashidhoo',
+			'GAA' => 'Gaafaru',
+			'THU' => 'Thulusdhoo',
+			'HUR' => 'Huraa',
+			'GUR' => 'Guraidhoo',
+			'GUL' => 'Gulhi',
+			'ADM' => 'Adh.Mahibadhoo'
+		);
+
+		return $islands;
 	}
 
 	public function data_sets() {
@@ -126,13 +177,14 @@ return ob_get_clean();
 		$route = '';
 
 		$ferry_schedules = self::get_ferry_schedule();
+		$got_island_names = self::get_island_names();
 
 		$can_goto_islands = self::list_all_islands_in_can_goto_array( $can_go) ;
 
 		$route .= '<div id="main-island-filter">';
 		$route .= '<h6>Ferry destinations</h6>';
 		foreach ( $can_goto_islands as $index => $uniqueIslands ) {
-			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.'">'.$uniqueIslands.'</span>';
+			$route .= '<span data-island="'.$uniqueIslands.'" class="island-filters island-filter-'.$uniqueIslands.'">'. $got_island_names[ $uniqueIslands ].'</span>';
 		}
 		$route .= '</div>';
 		
@@ -147,10 +199,13 @@ return ob_get_clean();
 			}
 
 			$route .= '<div class="interconnected-route '. $island_names . '">';
-			$route .= '<div class="interconnected-route-days">';
-			$route .= $ferry_schedules['days'][$index];
-			$route .= '</div>';
+			if ( isset( $ferry_schedules['days'][$index] ) ) {
+				$route .= '<div class="interconnected-route-days">';
+				$route .= $ferry_schedules['days'][$index];
+				$route .= '</div>';
+			}
 
+			$route .= '<div class="interconnected-route-path-wrap">';
 			foreach ($schedule as $record) {
 				$fromIsland = $record['from']['island'];
 				$fromTime = $record['from']['time'];
@@ -171,18 +226,22 @@ return ob_get_clean();
 					$route .= '<span class="from-point-of-departure">';
 				}
 				$route .= '<span class="from-island '. $destination_mark .'"><span class="from-time">'. $fromTime .'</span>';
-				$route .= '<span class="from-island-name tag-island tag-'.$fromIsland.'">'.$fromIsland.'</span>';
+				$route .= '<span class="from-island-name tag-island tag-'.$fromIsland.'">'. $got_island_names[ $fromIsland ].'</span>';
 				$route .= '</span>';
 
 				$route .= '</span>';
 				$route .= $arrow;
 				$route .= '<span class="up-to-arrow">';
 				$route .= '<span class="to-island '. $destination_mark .'"><span class="to-time">'. $toTime .'</span>';
-				$route .= '<span class="to-island-name tag-island tag-'.$toIsland.'">'.$toIsland.'</span>';
+				$route .= '<span class="to-island-name tag-island tag-'.$toIsland.'">'. $got_island_names[ $toIsland ].'</span>';
 				$route .= '</span>';
 
 			}
 			$route .= '</span>';
+			$route .= '<div class="scroll-indicator">';
+			$route .= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>';
+			$route .= '</div>';
+			$route .= '</div>';
 			$route .= '</div>';
 		}
 
@@ -374,6 +433,7 @@ return ob_get_clean();
 		$islands = [];
 	
 		$data_sets = self::data_sets();
+		$got_island_names = self::get_island_names();
 
 		foreach ($data_sets as $data_set) {
 
@@ -395,7 +455,7 @@ return ob_get_clean();
 		// Create a select list
 		$selectList .= '<option value="none">' . __('Choose depature island') . '</option>';
 		foreach ($uniqueIslands as $island) {
-			$selectList .= '<option value="' . $island . '">' . $island . '</option>';
+			$selectList .= '<option value="' . $island . '">' . $got_island_names[ $island ] . '</option>';
 		}
 	
 		return $selectList;
@@ -538,117 +598,117 @@ return ob_get_clean();
 		$data = array();
 // 301
 $data['days']['301'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['301'][]['Himandhoo']['Maalhos'] = '6:30am,7:00am';
-$data['301'][]['Maalhos']['Feridhoo'] =  '7:05am,7:30am';
-$data['301'][]['Feridhoo']['Mathiveri'] = '7:35am,8:30am';
-$data['301'][]['Mathiveri']['Bodufolhudhoo'] = '8:35am,8:55am';
-$data['301'][]['Bodufolhudhoo']['Ukulhas'] = '9:00am,9:35am';
-$data['301'][]['Ukulhas']['Rasdhoo'] = '10:00am,10:55am';
-$data['301'][]['Rasdhoo']['Ukulhas'] = '13:00pm,13:55pm';
-$data['301'][]['Ukulhas']['Bodufolhudhoo'] = '14:00pm,14:35pm';
-$data['301'][]['Bodufolhudhoo']['Mathiveri'] = '14:40pm,15:00pm';
-$data['301'][]['Mathiveri']['Feridhoo'] = '15:05pm,16:05pm';
-$data['301'][]['Feridhoo']['Maalhos'] = '16:10pm,16:35pm';
-$data['301'][]['Maalhos']['Himandhoo'] = '16:40pm,17:10pm';
+$data['301'][]['HMA']['MLH'] = '6:30am,7:00am';
+$data['301'][]['MLH']['FER'] =  '7:05am,7:30am';
+$data['301'][]['FER']['MAT'] = '7:35am,8:30am';
+$data['301'][]['MAT']['BOD'] = '8:35am,8:55am';
+$data['301'][]['BOD']['UKU'] = '9:00am,9:35am';
+$data['301'][]['UKU']['RAS'] = '10:00am,10:55am';
+$data['301'][]['RAS']['UKU'] = '13:00pm,13:55pm';
+$data['301'][]['UKU']['BOD'] = '14:00pm,14:35pm';
+$data['301'][]['BOD']['MAT'] = '14:40pm,15:00pm';
+$data['301'][]['MAT']['FER'] = '15:05pm,16:05pm';
+$data['301'][]['FER']['MLH'] = '16:10pm,16:35pm';
+$data['301'][]['MLH']['HMA'] = '16:40pm,17:10pm';
 
 
 // 302
 
 $data['days']['302'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['302'][]['Mandhoo']['Ku’nburudhoo'] = '6:30am,8:05am';
-$data['302'][]['Ku’nburudhoo']['Mahibadhoo'] = '8:10am,8:30am';
-$data['302'][]['Mahibadhoo']['Hangnaameedhoo'] = '8:35am,9:15am';
-$data['302'][]['Hangnaameedhoo']['Omadhoo'] = '9:20am,9:50am';
-$data['302'][]['Omadhoo']['Mahibadhoo'] = '9:55am,10:10am';
-$data['302'][]['Mahibadhoo']['Omadhoo'] = '13:30pm,13:45pm';
-$data['302'][]['Omadhoo']['Hangnaameedhoo'] = '13:50pm,14:20pm';
-$data['302'][]['Hangnaameedhoo']['Mahibadhoo'] = '14:25pm,15:05pm';
-$data['302'][]['Mahibadhoo']['Ku’nburudhoo'] = '15:10pm,15:30pm';
-$data['302'][]['Ku’nburudhoo']['Mandhoo'] = '15:35pm,17:10pm';
+$data['302'][]['MAN']['KUN'] = '6:30am,8:05am';
+$data['302'][]['KUN']['MAH'] = '8:10am,8:30am';
+$data['302'][]['MAH']['HAN'] = '8:35am,9:15am';
+$data['302'][]['HAN']['OMA'] = '9:20am,9:50am';
+$data['302'][]['OMA']['MAH'] = '9:55am,10:10am';
+$data['302'][]['MAH']['OMA'] = '13:30pm,13:45pm';
+$data['302'][]['OMA']['HAN'] = '13:50pm,14:20pm';
+$data['302'][]['HAN']['MAH'] = '14:25pm,15:05pm';
+$data['302'][]['MAH']['KUN'] = '15:10pm,15:30pm';
+$data['302'][]['KUN']['MAN'] = '15:35pm,17:10pm';
 
 // 303
 $data['days']['303-1'] = 'Saturday,Tuesday';
-$data['303-1'][]['Thoddoo']['Rasdhoo'] = '6:30am,8:10am';
-$data['303-1'][]['Rasdhoo']['Thoddoo'] = '15:10pm,16:20pm';
+$data['303-1'][]['THO']['RAS'] = '6:30am,8:10am';
+$data['303-1'][]['RAS']['THO'] = '15:10pm,16:20pm';
 
 $data['days']['303-2'] = 'Sunday, Wednesday';
-$data['303-2'][]['Thoddoo']['Rasdhoo'] = '6:30am,7:40am';
-$data['303-2'][]['Rasdhoo']['Ukulhas'] = '7:45am,8:35am';
-$data['303-2'][]['Ukulhas']['Rasdhoo'] = '9:45am,10:35am';
-$data['303-2'][]['Rasdhoo']['Male’'] = '11:00am,14:10pm';
+$data['303-2'][]['THO']['RAS'] = '6:30am,7:40am';
+$data['303-2'][]['RAS']['UKU'] = '7:45am,8:35am';
+$data['303-2'][]['UKU']['RAS'] = '9:45am,10:35am';
+$data['303-2'][]['RAS']['MAL'] = '11:00am,14:10pm';
 
 $data['days']['303-3'] = 'Monday, Thursday';
-$data['303-3'][]['Male’']['Rasdhoo'] = '9:00am,12:10pm';
-$data['303-3'][]['Rasdhoo']['Ukulhas'] = '12:15pm,13:05pm';
-$data['303-3'][]['Ukulhas']['Rasdhoo'] = '14:00pm,14:50pm';
-$data['303-3'][]['Rasdhoo']['Thoddoo'] = '15:10pm,16:20pm';
+$data['303-3'][]['MAL']['RAS'] = '9:00am,12:10pm';
+$data['303-3'][]['RAS']['UKU'] = '12:15pm,13:05pm';
+$data['303-3'][]['UKU']['RAS'] = '14:00pm,14:50pm';
+$data['303-3'][]['RAS']['THO'] = '15:10pm,16:20pm';
 // 304
 $data['days']['304'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['304'][]['Fenfushi']['Maamigili'] = '6:30am,6:55am';
-$data['304'][]['Maamigili']['Dhidhdhoo'] = '7:00am,7:25am';
-$data['304'][]['Dhidhdhoo']['Dhigurah'] = '7:30am,8:00am';
-$data['304'][]['Dhigurah']['Dha’ngethi'] = '8:05am,8:35am';
-$data['304'][]['Dha’ngethi']['Mahibadhoo'] = '8:40am,9:40am';
-$data['304'][]['Mahibadhoo']['Dha’ngethi'] = '13:30pm,14:30pm';
-$data['304'][]['Dha’ngethi']['Dhigurah'] = '14:35pm,15:05pm';
-$data['304'][]['Dhigurah']['Dhidhdhoo'] = '15:10pm,15:40pm';
-$data['304'][]['Dhidhdhoo']['Maamigili'] = '15:45pm,16:10pm';
-$data['304'][]['Maamigili']['Fenfushi'] = '16:15pm,16:40pm';
+$data['304'][]['FEN']['MMI'] = '6:30am,6:55am';
+$data['304'][]['MMI']['DHI'] = '7:00am,7:25am';
+$data['304'][]['DHI']['DGU'] = '7:30am,8:00am';
+$data['304'][]['DGU']['DHA'] = '8:05am,8:35am';
+$data['304'][]['DHA']['MAH'] = '8:40am,9:40am';
+$data['304'][]['MAH']['DHA'] = '13:30pm,14:30pm';
+$data['304'][]['DHA']['DGU'] = '14:35pm,15:05pm';
+$data['304'][]['DGU']['DHI'] = '15:10pm,15:40pm';
+$data['304'][]['DHI']['MMI'] = '15:45pm,16:10pm';
+$data['304'][]['MMI']['FEN'] = '16:15pm,16:40pm';
 // 305
 $data['days']['305-1'] = 'Saturday, Monday, Wednesday';
-$data['305-1'][]['Male’']['Mahibadhoo'] = '8:30am,12:40pm';
-$data['305-2'][]['Mahibadhoo']['Male’'] = '11:00am,15:20pm';
+$data['305-1'][]['MAL']['MAH'] = '8:30am,12:40pm';
+$data['305-2'][]['MAH']['MAL'] = '11:00am,15:20pm';
 
 // 306
 $data['days']['306-1'] = 'Saturday, Monday, Wednesday';
-$data['306-1'][]['Rakeedhoo']['Keyodhoo'] = '7:00am,8:10am';
-$data['306-1'][]['Keyodhoo']['Felidhoo'] = '8:20am,8:30am';
-$data['306-1'][]['Felidhoo']['Vaavu-Thinadhoo'] = '8:40am,8:50am';
-$data['306-1'][]['Vaavu-Thinadhoo']['Fulidhoo'] = '9:00am,10:30am';
-$data['306-1'][]['Fulidhoo']['Maafushi'] = '10:45am,12:25pm';
-$data['306-1'][]['Maafushi']['Male’'] = '12:35pm,2:05pm';
+$data['306-1'][]['RAK']['KEY'] = '7:00am,8:10am';
+$data['306-1'][]['KEY']['FEL'] = '8:20am,8:30am';
+$data['306-1'][]['FEL']['VTH'] = '8:40am,8:50am';
+$data['306-1'][]['VTH']['FUL'] = '9:00am,10:30am';
+$data['306-1'][]['FUL']['MAA'] = '10:45am,12:25pm';
+$data['306-1'][]['MAA']['MAL'] = '12:35pm,2:05pm';
 
 $data['days']['306-2'] = 'Sunday, Tuesday, Thursday';
-$data['306-2'][]['Male’']['Maafushi'] = '10:00am,11:30am';
-$data['306-2'][]['Maafushi']['Fulidhoo'] = '11:35am,1:20pm';
-$data['306-2'][]['Fulidhoo']['Vaavu-Thinadhoo'] = '1:30pm,3:00pm';
-$data['306-2'][]['Vaavu-Thinadhoo']['Felidhoo'] = '3:05pm,3:15pm';
-$data['306-2'][]['Felidhoo']['Keyodhoo'] = '3:20pm,3:30pm';
-$data['306-2'][]['Keyodhoo']['Rakeedhoo'] = '3:35pm,4:50pm';
+$data['306-2'][]['MAL']['MAA'] = '10:00am,11:30am';
+$data['306-2'][]['MAA']['FUL'] = '11:35am,1:20pm';
+$data['306-2'][]['FUL']['VTH'] = '1:30pm,3:00pm';
+$data['306-2'][]['VTH']['FEL'] = '3:05pm,3:15pm';
+$data['306-2'][]['FEL']['KEY'] = '3:20pm,3:30pm';
+$data['306-2'][]['KEY']['RAK'] = '3:35pm,4:50pm';
 // 307
 $data['days']['307-1'] = 'Saturday, Monday, Wednesday';
-$data['307-1'][]['Kaashidhoo']['Gaafaru'] = '7:00am,8:20am';
-$data['307-1'][]['Gaafaru']['Male’'] = '8:30am,11:50am';
+$data['307-1'][]['KAA']['GAA'] = '7:00am,8:20am';
+$data['307-1'][]['GAA']['MAL'] = '8:30am,11:50am';
 $days['307-2'] = 'Sunday, Tuesday, Thursday';
-$data['307-2'][]['Male’']['Gaafaru'] = '10:45am,12:25pm';
-$data['307-2'][]['Gaafaru']['Kaashidhoo'] = '12:35pm,3:20pm';
+$data['307-2'][]['MAL']['GAA'] = '10:45am,12:25pm';
+$data['307-2'][]['GAA']['KAA'] = '12:35pm,3:20pm';
 // 308
 $data['days']['308'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['308'][]['Dhiffushi']['Thulusdhoo'] = '6:30am,7:05am';
-$data['308'][]['Thulusdhoo']['Huraa'] = '7:10am,7:35am';
-$data['308'][]['Huraa']['Himmafushi'] = '7:40am,7:55am';
-$data['308'][]['Himmafushi']['Male’'] = '8:00am,8:40am';
-$data['308'][]['Male’']['Himmafushi'] = '14:30pm,15:10pm';
-$data['308'][]['Himmafushi']['Huraa'] = '15:15pm,15:30pm';
-$data['308'][]['Huraa']['Thulusdhoo'] = '15:35pm,16:00pm';
-$data['308'][]['Thulusdhoo']['Dhiffushi'] = '16:05pm,16:40pm';
+$data['308'][]['DHS']['THU'] = '6:30am,7:05am';
+$data['308'][]['THU']['HUR'] = '7:10am,7:35am';
+$data['308'][]['HUR']['HIM'] = '7:40am,7:55am';
+$data['308'][]['HIM']['MAL'] = '8:00am,8:40am';
+$data['308'][]['MAL']['HIM'] = '14:30pm,15:10pm';
+$data['308'][]['HIM']['HUR'] = '15:15pm,15:30pm';
+$data['308'][]['HUR']['THU'] = '15:35pm,16:00pm';
+$data['308'][]['THU']['DHS'] = '16:05pm,16:40pm';
 
 // 309
 $data['days']['309'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['309'][]['Guraidhoo']['Maafushi'] = '7:00am,7:20am';
-$data['309'][]['Maafushi']['Gulhi'] = '7:25am,7:45am';
-$data['309'][]['Gulhi']['Male’'] = '7:50am,9:05am';
-$data['309'][]['Male’']['Gulhi'] = '15:00pm,16:15pm';
-$data['309'][]['Gulhi']['Maafushi'] = '16:20pm,16:40pm';
-$data['309'][]['Maafushi']['Guraidhoo'] = '16:45pm,17:05pm';
+$data['309'][]['GUR']['MAA'] = '7:00am,7:20am';
+$data['309'][]['MAA']['GUL'] = '7:25am,7:45am';
+$data['309'][]['GUL']['MAL'] = '7:50am,9:05am';
+$data['309'][]['MAL']['GUL'] = '15:00pm,16:15pm';
+$data['309'][]['GUL']['MAA'] = '16:20pm,16:40pm';
+$data['309'][]['MAA']['GUR'] = '16:45pm,17:05pm';
 // 310
 $data['days']['310'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
-$data['310'][]['Feridhoo']['Maalhos'] = '6:30am,6:55am';
-$data['310'][]['Maalhos']['Himandhoo'] = '7:00am,7:30am';
-$data['310'][]['Himandhoo']['Adh.Mahibadhoo'] = '7:35am,9:10am';
-$data['310'][]['Adh.Mahibadhoo']['Himandhoo'] = '14:00pm,15:35pm';
-$data['310'][]['Himandhoo']['Maalhos'] = '15:40pm,16:10pm';
-$data['310'][]['Maalhos']['Feridhoo'] = '16:15pm,16:40pm';
+$data['310'][]['FER']['MLH'] = '6:30am,6:55am';
+$data['310'][]['MLH']['HMA'] = '7:00am,7:30am';
+$data['310'][]['HMA']['ADM'] = '7:35am,9:10am';
+$data['310'][]['ADM']['HMA'] = '14:00pm,15:35pm';
+$data['310'][]['HMA']['MLH'] = '15:40pm,16:10pm';
+$data['310'][]['MLH']['FER'] = '16:15pm,16:40pm';
 return $data;
 
 	}

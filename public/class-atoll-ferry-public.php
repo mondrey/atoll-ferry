@@ -65,10 +65,10 @@ class Atoll_Ferry_Public {
 	}
 
 	public function get_disclaimer() {
-		$disclaimer = 'Disclaimer:';
+		$disclaimer = '<strong>Disclaimer:</strong>';
 		$disclaimer .= '<p>The information provided for public ferry schedules is sourced from the MTCC (Maldives Transport and Contracting Company) website. Although we have taken measures to ensure data accuracy, please note that schedules may be subject to change, and it is advisable to check with MTCC for the most up-to-date information.</p>';
-		$disclaimer .= '<p>Source PDF: <a href="https://mtcc.mv/wp-content/uploads/2022/05/CTN-Ferry-Schedule-Effective-15.05.2022-K.And-Aa.-Adh.V.pdf" target="_blank">MTCC Ferry Schedule PDF</a> ( 15th March 2022 )</p>';
-		$disclaimer .= '<p>Source Website: <a href="https://mtcc.mv/" target="_blank">MTCC</a></p>';
+		$disclaimer .= '<p>Source PDF: <a href="https://mtcc.mv/wp-content/uploads/2022/01/CTN-Ferry-All-Atolls-16.7.23.pdf" target="_blank">MTCC Ferry Schedule PDF</a> ( 29th April 2023 )</p>';
+		$disclaimer .= '<p>Source Website: <a href="https://mtcc.mv/schedules-2/" target="_blank">MTCC</a></p>';
 		return $disclaimer;
 	}
 

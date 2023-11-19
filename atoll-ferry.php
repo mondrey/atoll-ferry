@@ -3,14 +3,14 @@
 /**
  *
  * @link              https://github.com/mondrey/atoll-ferry
- * @since             1.0.6
+ * @since             1.0.7
  * @package           Atoll Ferry
  *
  * @wordpress-plugin
  * Plugin Name:       Atoll Ferry
  * Plugin URI:        https://github.com/mondrey/atoll-ferry
  * Description:       Maldives transport information plugin
- * Version:           1.0.6
+ * Version:           1.0.7
  * Author:            Mohamed Musthafa
  * Author URI:        https://github.com/mondrey/
  * License:           GPL-2.0+

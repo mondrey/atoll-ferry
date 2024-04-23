@@ -9,46 +9,47 @@ Atoll Ferry allows you to integrate ferry schedules into your WordPress site eff
 Island names stored with abbreviations.
 
 ```php
-	public function get_island_names() {
-		$islands = array(
-			'DGU' => 'Dhigurah',
-			'DHS' => 'Dhiffushi',
-			'MMI' => 'Maamigili',
-			'MLH' => 'Maalhos',
-			'HMA' => 'Himandhoo',
-			'HIM' => 'Himmafushi',
-			'MAA' => 'Maafushi',
-			'FER' => 'Feridhoo',
-			'MAT' => 'Mathiveri',
-			'BOD' => 'Bodufolhudhoo',
-			'UKU' => 'Ukulhas',
-			'RAS' => 'Rasdhoo',
-			'MAN' => 'Mandhoo',
-			'KUN' => 'Ku’nburudhoo',
-			'MAH' => 'Mahibadhoo',
-			'HAN' => 'Hangnaameedhoo',
-			'OMA' => 'Omadhoo',
-			'THO' => 'Thoddoo',
-			'MAL' => 'Male’',
-			'FEN' => 'Fenfushi',
-			'DHI' => 'Dhidhdhoo',
-			'DHA' => 'Dha’ngethi',
-			'RAK' => 'Rakeedhoo',
-			'KEY' => 'Keyodhoo',
-			'FEL' => 'Felidhoo',
-			'VTH' => 'V.Thinadhoo',
-			'FUL' => 'Fulidhoo',
-			'KAA' => 'Kaashidhoo',
-			'GAA' => 'Gaafaru',
-			'THU' => 'Thulusdhoo',
-			'HUR' => 'Huraa',
-			'GUR' => 'Guraidhoo',
-			'GUL' => 'Gulhi',
-			'ADM' => 'Adh.Mahibadhoo'
-		);
+public function get_island_names() {
+	$islands = array(
+		'DGU' => 'Dhigurah',
+		'DHS' => 'Dhiffushi',
+		'MMI' => 'Maamigili',
+		'MLH' => 'Maalhos',
+		'HMA' => 'Himandhoo',
+		'HIM' => 'Himmafushi',
+		'MAA' => 'Maafushi',
+		'FER' => 'Feridhoo',
+		'MAT' => 'Mathiveri',
+		'BOD' => 'Bodufolhudhoo',
+		'UKU' => 'Ukulhas',
+		'RAS' => 'Rasdhoo',
+		'MAN' => 'Mandhoo',
+		'KUN' => 'Ku’nburudhoo',
+		'MAH' => 'Mahibadhoo',
+		'HAN' => 'Hangnaameedhoo',
+		'OMA' => 'Omadhoo',
+		'THO' => 'Thoddoo',
+		'MAL' => 'Male’',
+		'FEN' => 'Fenfushi',
+		'DHI' => 'Dhidhdhoo',
+		'DHA' => 'Dha’ngethi',
+		'RAK' => 'Rakeedhoo',
+		'KEY' => 'Keyodhoo',
+		'FEL' => 'Felidhoo',
+		'VTH' => 'V.Thinadhoo',
+		'FUL' => 'Fulidhoo',
+		'KAA' => 'Kaashidhoo',
+		'GAA' => 'Gaafaru',
+		'THU' => 'Thulusdhoo',
+		'HUR' => 'Huraa',
+		'GUR' => 'Guraidhoo',
+		'GUL' => 'Gulhi',
+		'ADM' => 'Adh.Mahibadhoo'
+	);
 
-		return $islands;
-	}
+	return $islands;
+}
+
 ```
 
 And the days / routes / time are set as follows.

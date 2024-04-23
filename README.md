@@ -74,7 +74,7 @@ $data['301'][]['MLH']['HMA'] = '16:40pm,17:10pm';
 ## Features
 
 - **Shortcode Integration**: Easily integrate ferry schedules using the `[ferryfinder]` shortcode.
-- **Responsive Design**: Ensures that ferry schedules look great on all devices.
+- **Responsive Design**: Ensures that ferry schedules look good on all devices.
 
 ## Installation
 

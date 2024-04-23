@@ -1,114 +1,103 @@
-=== Atoll Ferry ===
-Contributors: (this should be a list of wordpress.org userid's)
-Donate link: http://example.com/
-Tags: comments, spam
-Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+# Atoll Ferry
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Welcome to Atoll Ferry, a WordPress plugin designed to impletement Maldives public ferry schedule finder a simple shortcode. This plugin is perfect for travel websites, tour operators, and community portals that need to provide ferry information across various islands.
 
-== Description ==
+## Description
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+Atoll Ferry allows you to integrate ferry schedules into your WordPress site effortlessly. By using the `[ferryfinder]` shortcode, you can display it anywhere on your site. The plugin pulls data from a predefined array.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+Island names stored with abbreviations.
 
-A few notes about the sections above:
+```php
+	public function get_island_names() {
+		$islands = array(
+			'DGU' => 'Dhigurah',
+			'DHS' => 'Dhiffushi',
+			'MMI' => 'Maamigili',
+			'MLH' => 'Maalhos',
+			'HMA' => 'Himandhoo',
+			'HIM' => 'Himmafushi',
+			'MAA' => 'Maafushi',
+			'FER' => 'Feridhoo',
+			'MAT' => 'Mathiveri',
+			'BOD' => 'Bodufolhudhoo',
+			'UKU' => 'Ukulhas',
+			'RAS' => 'Rasdhoo',
+			'MAN' => 'Mandhoo',
+			'KUN' => 'Ku’nburudhoo',
+			'MAH' => 'Mahibadhoo',
+			'HAN' => 'Hangnaameedhoo',
+			'OMA' => 'Omadhoo',
+			'THO' => 'Thoddoo',
+			'MAL' => 'Male’',
+			'FEN' => 'Fenfushi',
+			'DHI' => 'Dhidhdhoo',
+			'DHA' => 'Dha’ngethi',
+			'RAK' => 'Rakeedhoo',
+			'KEY' => 'Keyodhoo',
+			'FEL' => 'Felidhoo',
+			'VTH' => 'V.Thinadhoo',
+			'FUL' => 'Fulidhoo',
+			'KAA' => 'Kaashidhoo',
+			'GAA' => 'Gaafaru',
+			'THU' => 'Thulusdhoo',
+			'HUR' => 'Huraa',
+			'GUR' => 'Guraidhoo',
+			'GUL' => 'Gulhi',
+			'ADM' => 'Adh.Mahibadhoo'
+		);
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+		return $islands;
+	}
+```
 
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
+And the days / routes / time are set as follows.
+In this it is the 301 route.
 
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
+```php
+$data['days']['301'] = 'Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday';
+$data['301'][]['HMA']['MLH'] = '6:30am,7:00am';
+$data['301'][]['MLH']['FER'] = '7:05am,7:30am';
+$data['301'][]['FER']['MAT'] = '7:35am,8:30am';
+$data['301'][]['MAT']['BOD'] = '8:35am,8:55am';
+$data['301'][]['BOD']['UKU'] = '9:00am,9:35am';
+$data['301'][]['UKU']['RAS'] = '10:00am,10:55am';
+$data['301'][]['RAS']['UKU'] = '13:00pm,13:55pm';
+$data['301'][]['UKU']['BOD'] = '14:00pm,14:35pm';
+$data['301'][]['BOD']['MAT'] = '14:40pm,15:00pm';
+$data['301'][]['MAT']['FER'] = '15:05pm,16:05pm';
+$data['301'][]['FER']['MLH'] = '16:10pm,16:35pm';
+$data['301'][]['MLH']['HMA'] = '16:40pm,17:10pm';
+```
 
-== Installation ==
+## Features
 
-This section describes how to install the plugin and get it working.
+- **Shortcode Integration**: Easily integrate ferry schedules using the `[ferryfinder]` shortcode.
+- **Responsive Design**: Ensures that ferry schedules look great on all devices.
 
-e.g.
+## Installation
 
-1. Upload `atoll-ferry.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('atoll_ferry_hook'); ?>` in your templates
+1. Download the plugin from the GitHub repository.
+2. Upload the plugin files to the `/wp-content/plugins/atoll-ferry` directory, or install the plugin through the WordPress plugins screen directly.
+3. Activate the plugin through the 'Plugins' screen in WordPress.
+4. Add shortcode [ferryfinder] to any page.
 
-== Frequently Asked Questions ==
+## Usage
 
-= A question that someone might have =
+To display ferry schedules on your WordPress site, simply add the shortcode `[ferryfinder]` to any post, page, or widget. 
 
-An answer to that question.
+## Changelog
 
-= What about foo bar? =
+### 1.0
+- Initial release of Atoll Ferry.
 
-Answer to foo bar dilemma.
+## License
 
-== Screenshots ==
+This project is licensed under the GNU General Public License v2.0. For more details, see the LICENSE file included with this plugin.
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+## Support
 
-== Changelog ==
+For support, feature requests, or bug reporting, please visit the issues section on our GitHub repository.
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+Thank you for using Atoll Ferry!
 
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
